@@ -17,14 +17,9 @@ An offline desktop WiFi mapping application - like WiGLE but completely local an
 
 ## Installation
 
-### Download Pre-built Binaries
-
-Download the latest release for your platform:
-- **Windows**: `WiFi-Map-Viewer-{version}-x64.exe`
-- **macOS**: `WiFi-Map-Viewer-{version}-x64.dmg` (Intel) or `WiFi-Map-Viewer-{version}-arm64.dmg` (Apple Silicon)
-- **Linux**: `WiFi-Map-Viewer-{version}-x64.AppImage` or `WiFi-Map-Viewer-{version}-x64.deb`
-
 ### Building from Source
+
+Pre-built binaries coming soon. For now, build from source:
 
 #### Prerequisites
 
