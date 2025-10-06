@@ -1,5 +1,7 @@
 # WiFi Map Viewer
 
+> This app is just something I wanted since I had lot of performance issues with WiGLE. At this stage it's all offline cos I feel more comfortable that way (I am not dev). I got access to test version of Kiro, new vibe coding IDE from Amazon and decided to try it out. There are issues, and there can always be improvements but for someone who's dumb as they get I'm happy.
+
 An offline desktop WiFi mapping application - like WiGLE but completely local and private. Visualize WiFi networks on an interactive map using data from wardriving apps. Fully compatible with WiGLE WiFi Wardriving app exports and other popular formats.
 
 **100% Offline** - All data stays on your machine. No accounts, no cloud, no tracking.
