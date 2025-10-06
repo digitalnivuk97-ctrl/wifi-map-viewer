@@ -6,6 +6,16 @@ An offline desktop WiFi mapping application - like WiGLE but completely local an
 
 **100% Offline** - All data stays on your machine. No accounts, no cloud, no tracking.
 
+## Screenshots
+
+### Interactive Map View
+![Map View](docs/screenshots/map-view.png)
+*Visualize WiFi networks on an interactive map with clustering and filtering options*
+
+### Import Dialog
+![Import Dialog](docs/screenshots/import-dialog.png)
+*Import data from WiGLE, Kismet, KML, and SQLite formats with progress tracking*
+
 ## Features
 
 - 📍 Interactive map visualization with OpenStreetMap
