@@ -9,11 +9,11 @@ An offline desktop WiFi mapping application - like WiGLE but completely local an
 ## Screenshots
 
 ### Interactive Map View
-![Map View](docs/screenshots/map-view.png)
+![Map View](docs/screenshots/map-view.jpg)
 *Visualize WiFi networks on an interactive map with clustering and filtering options*
 
 ### Import Dialog
-![Import Dialog](docs/screenshots/import-dialog.png)
+![Import Dialog](docs/screenshots/import-dialog.jpg)
 *Import data from WiGLE, Kismet, KML, and SQLite formats with progress tracking*
 
 ## Features
