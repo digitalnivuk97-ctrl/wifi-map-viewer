@@ -1,0 +1,136 @@
+{
+  "name": "wifi-map-viewer",
+  "version": "1.0.0",
+  "description": "Local offline WiFi mapping application",
+  "main": "dist-electron/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder",
+    "build:win": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --win",
+    "build:mac": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --mac",
+    "build:linux": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --linux",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:build": "vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder",
+    "package": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --dir",
+    "dist": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder",
+    "check-icons": "node scripts/generate-icons.js",
+    "verify-build": "node scripts/verify-build-setup.js"
+  },
+  "keywords": [
+    "wifi",
+    "mapping",
+    "electron"
+  ],
+  "author": "WiFi Map Viewer Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/leaflet": "^1.9.14",
+    "@types/node": "^22.10.5",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "electron": "^33.3.1",
+    "electron-builder": "^25.1.8",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vite-plugin-electron": "^0.28.8",
+    "vite-plugin-electron-renderer": "^0.14.5",
+    "wait-on": "^8.0.1"
+  },
+  "dependencies": {
+    "@types/leaflet.markercluster": "^1.5.6",
+    "better-sqlite3": "^11.7.0",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1"
+  },
+  "build": {
+    "appId": "com.wifimapviewer.app",
+    "productName": "WiFi Map Viewer",
+    "directories": {
+      "output": "dist-release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "electron/preload.cjs",
+      "package.json",
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/bindings/**/*",
+      "node_modules/prebuild-install/**/*",
+      "node_modules/file-uri-to-path/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**/*",
+      "node_modules/bindings/**/*",
+      "node_modules/prebuild-install/**/*",
+      "node_modules/file-uri-to-path/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "artifactName": "${productName}-${version}-${arch}.${ext}",
+      "sign": null,
+      "signingHashAlgorithms": []
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "deb",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.png",
+      "category": "Utility",
+      "artifactName": "${productName}-${version}-${arch}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "WiFi Map Viewer"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

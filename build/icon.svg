@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="256" cy="256" r="240" fill="#2196F3"/>
+  
+  <!-- WiFi signal waves -->
+  <g fill="none" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round">
+    <!-- Outer wave -->
+    <path d="M 140 280 Q 256 180 372 280"/>
+    <!-- Middle wave -->
+    <path d="M 180 300 Q 256 230 332 300"/>
+    <!-- Inner wave -->
+    <path d="M 220 320 Q 256 280 292 320"/>
+  </g>
+  
+  <!-- Center dot -->
+  <circle cx="256" cy="340" r="20" fill="#FFFFFF"/>
+  
+  <!-- Map pin overlay -->
+  <g fill="#FF5722" stroke="#FFFFFF" stroke-width="4">
+    <path d="M 256 160 C 220 160 190 190 190 226 C 190 256 256 310 256 310 C 256 310 322 256 322 226 C 322 190 292 160 256 160 Z"/>
+    <circle cx="256" cy="226" r="18" fill="#FFFFFF"/>
+  </g>
+</svg>

@@ -1,0 +1,56 @@
+.network-label {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+}
+
+.network-label::before {
+  display: none;
+}
+
+.custom-marker {
+  background: transparent;
+  border: none;
+}
+
+/* Marker shapes */
+.marker-shape {
+  width: 12px;
+  height: 12px;
+  border: 2px solid white;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+/* Circle shape for WiFi networks */
+.marker-circle {
+  border-radius: 50%;
+}
+
+/* Diamond shape for BLE networks */
+.marker-diamond {
+  transform: rotate(45deg);
+  border-radius: 2px;
+}
+
+/* Square shape for LTE networks */
+.marker-square {
+  border-radius: 2px;
+}
+
+/* Network type specific classes for additional styling if needed */
+.marker-wifi {
+  /* WiFi-specific styles */
+}
+
+.marker-ble {
+  /* BLE-specific styles */
+}
+
+.marker-lte {
+  /* LTE-specific styles */
+}
