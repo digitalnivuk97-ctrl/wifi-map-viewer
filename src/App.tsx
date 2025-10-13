@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react';
 import MapView from './components/MapView';
 import SearchPanel from './components/SearchPanel';
 import ImportDialog from './components/ImportDialog';
+import SettingsDialog from './components/SettingsDialog';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Network, GeoBounds, NetworkFilter, ImportResult } from './types/network';
 import { databaseService } from './services/DatabaseService';
@@ -15,7 +16,10 @@ function App() {
   const [isFileMenuOpen, setIsFileMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [clusteringEnabled, setClusteringEnabled] = useState(true);
+  const [autoClusterZoomThreshold, setAutoClusterZoomThreshold] = useState(13);
   const [centerOnNetwork, setCenterOnNetwork] = useState<Network | null>(null);
+  const [isSearchPanelVisible, setIsSearchPanelVisible] = useState(false);
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
 
   // Load networks from database
   const loadNetworks = useCallback(async () => {
@@ -42,13 +46,15 @@ function App() {
     loadNetworks();
   }, [loadNetworks]);
 
-  // Load clustering preference from config
+  // Load clustering preference, zoom threshold, and search panel visibility from config
   useEffect(() => {
     const loadConfig = async () => {
       try {
         if (window.electronAPI) {
           const config = await window.electronAPI.getConfig();
           setClusteringEnabled(config.map.clusteringEnabled);
+          setAutoClusterZoomThreshold(config.map.autoClusterZoomThreshold);
+          setIsSearchPanelVisible(config.ui.searchPanelVisible);
         }
       } catch (error) {
         logger.error('Failed to load config', error instanceof Error ? error : new Error(String(error)));
@@ -73,6 +79,19 @@ function App() {
     
     return counts;
   }, [allNetworks]);
+
+  // Count active filters
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filter.ssid) count++;
+    if (filter.bssid) count++;
+    if (filter.encryption && filter.encryption.length > 0) count++;
+    if (filter.minSignal !== undefined && filter.minSignal > -100) count++;
+    if (filter.dateRange) count++;
+    if (filter.bounds) count++;
+    if (filter.types && filter.types.length > 0) count++;
+    return count;
+  }, [filter]);
 
   // Apply filters to networks
   const filteredNetworks = useMemo(() => {
@@ -174,6 +193,43 @@ function App() {
     }
   };
 
+  const handleThresholdChange = async (threshold: number) => {
+    setAutoClusterZoomThreshold(threshold);
+    
+    // Persist to config
+    try {
+      if (window.electronAPI) {
+        await window.electronAPI.saveConfig({
+          map: {
+            autoClusterZoomThreshold: threshold
+          }
+        });
+        logger.info(`Auto-cluster zoom threshold set to ${threshold}`);
+      }
+    } catch (error) {
+      logger.error('Failed to save zoom threshold', error instanceof Error ? error : new Error(String(error)));
+    }
+  };
+
+  const handleSearchPanelToggle = async () => {
+    const newVisibility = !isSearchPanelVisible;
+    setIsSearchPanelVisible(newVisibility);
+    
+    // Persist to config
+    try {
+      if (window.electronAPI) {
+        await window.electronAPI.saveConfig({
+          ui: {
+            searchPanelVisible: newVisibility
+          }
+        });
+        logger.info(`Search panel ${newVisibility ? 'shown' : 'hidden'}`);
+      }
+    } catch (error) {
+      logger.error('Failed to save search panel visibility', error instanceof Error ? error : new Error(String(error)));
+    }
+  };
+
   const handleImport = async (filePath: string): Promise<ImportResult> => {
     try {
       logger.info(`Starting import from: ${filePath}`);
@@ -245,16 +301,37 @@ function App() {
                 </>
               )}
             </div>
+            <div className="menu-item">
+              <div 
+                className="menu-item-label search-button"
+                onClick={handleSearchPanelToggle}
+                title="Toggle search panel"
+              >
+                🔍 Search
+                {!isSearchPanelVisible && activeFilterCount > 0 && (
+                  <span className="filter-badge">{activeFilterCount}</span>
+                )}
+              </div>
+            </div>
+            <div className="menu-bar-spacer"></div>
+            <div className="menu-item">
+              <div 
+                className="menu-item-label settings-button"
+                onClick={() => setIsSettingsDialogOpen(true)}
+                title="Open settings"
+              >
+                ⚙️ Settings
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Main Content */}
         <div className="main-content">
           <SearchPanel 
+            isVisible={isSearchPanelVisible}
             onFilterChange={handleFilterChange}
-            onClusteringToggle={handleClusteringToggle}
             onJumpToNetwork={handleJumpToNetwork}
-            clusteringEnabled={clusteringEnabled}
             resultCount={filteredNetworks.length}
             networkTypeCounts={networkTypeCounts}
             searchResults={filteredNetworks}
@@ -265,6 +342,7 @@ function App() {
               onBoundsChange={handleBoundsChange}
               onNetworkClick={handleNetworkClick}
               clusteringEnabled={clusteringEnabled}
+              autoClusterZoomThreshold={autoClusterZoomThreshold}
               defaultCenter={[37.7749, -122.4194]} // San Francisco
               defaultZoom={13}
               centerOnNetwork={centerOnNetwork}
@@ -295,6 +373,15 @@ function App() {
           isOpen={isImportDialogOpen}
           onClose={() => setIsImportDialogOpen(false)}
           onImport={handleImport}
+        />
+        
+        <SettingsDialog
+          isOpen={isSettingsDialogOpen}
+          onClose={() => setIsSettingsDialogOpen(false)}
+          clusteringEnabled={clusteringEnabled}
+          onClusteringToggle={handleClusteringToggle}
+          autoClusterZoomThreshold={autoClusterZoomThreshold}
+          onThresholdChange={handleThresholdChange}
         />
       </div>
     </ErrorBoundary>

@@ -8,6 +8,10 @@ export var DEFAULT_CONFIG = {
     map: {
         defaultZoom: 13,
         defaultCenter: [0, 0],
-        clusteringEnabled: true
+        clusteringEnabled: true,
+        autoClusterZoomThreshold: 13
+    },
+    ui: {
+        searchPanelVisible: false
     }
 };

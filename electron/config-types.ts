@@ -10,6 +10,10 @@ export interface AppConfig {
         defaultZoom: number;
         defaultCenter: [number, number];
         clusteringEnabled: boolean;
+        autoClusterZoomThreshold: number;
+    };
+    ui: {
+        searchPanelVisible: boolean;
     };
 }
 
@@ -27,6 +31,10 @@ export const DEFAULT_CONFIG: AppConfig = {
     map: {
         defaultZoom: 13,
         defaultCenter: [0, 0],
-        clusteringEnabled: true
+        clusteringEnabled: true,
+        autoClusterZoomThreshold: 13
+    },
+    ui: {
+        searchPanelVisible: false
     }
 };

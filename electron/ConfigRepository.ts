@@ -34,6 +34,10 @@ export class ConfigRepository {
                         ...loadedConfig.map,
                         // Ensure clusteringEnabled has a default value
                         clusteringEnabled: loadedConfig.map?.clusteringEnabled ?? DEFAULT_CONFIG.map.clusteringEnabled
+                    },
+                    ui: {
+                        ...DEFAULT_CONFIG.ui,
+                        ...loadedConfig.ui
                     }
                 };
             }
@@ -69,6 +73,13 @@ export class ConfigRepository {
                 ...this.config.map,
                 ...newConfig.map
             } as AppConfig['map'];
+        }
+
+        if (newConfig.ui) {
+            this.config.ui = {
+                ...this.config.ui,
+                ...newConfig.ui
+            };
         }
 
         try {

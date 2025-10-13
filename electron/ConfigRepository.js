@@ -34,7 +34,8 @@ var ConfigRepository = /** @class */ (function () {
                     database: __assign(__assign({}, DEFAULT_CONFIG.database), loadedConfig.database),
                     map: __assign(__assign(__assign({}, DEFAULT_CONFIG.map), loadedConfig.map), { 
                         // Ensure clusteringEnabled has a default value
-                        clusteringEnabled: (_b = (_a = loadedConfig.map) === null || _a === void 0 ? void 0 : _a.clusteringEnabled) !== null && _b !== void 0 ? _b : DEFAULT_CONFIG.map.clusteringEnabled })
+                        clusteringEnabled: (_b = (_a = loadedConfig.map) === null || _a === void 0 ? void 0 : _a.clusteringEnabled) !== null && _b !== void 0 ? _b : DEFAULT_CONFIG.map.clusteringEnabled }),
+                    ui: __assign(__assign({}, DEFAULT_CONFIG.ui), loadedConfig.ui)
                 };
             }
         }
@@ -60,6 +61,9 @@ var ConfigRepository = /** @class */ (function () {
         }
         if (newConfig.map) {
             this.config.map = __assign(__assign({}, this.config.map), newConfig.map);
+        }
+        if (newConfig.ui) {
+            this.config.ui = __assign(__assign({}, this.config.ui), newConfig.ui);
         }
         try {
             // Ensure directory exists

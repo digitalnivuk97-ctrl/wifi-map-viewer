@@ -3,20 +3,18 @@ import { NetworkFilter, EncryptionType, NetworkType } from '../types/network';
 import './SearchPanel.css';
 
 interface SearchPanelProps {
+  isVisible: boolean;
   onFilterChange: (filter: NetworkFilter) => void;
-  onClusteringToggle: (enabled: boolean) => void;
   onJumpToNetwork?: (network: any) => void;
-  clusteringEnabled: boolean;
   resultCount?: number;
   networkTypeCounts?: { [key: string]: number };
   searchResults?: any[];
 }
 
 export default function SearchPanel({ 
+  isVisible,
   onFilterChange, 
-  onClusteringToggle, 
   onJumpToNetwork,
-  clusteringEnabled, 
   resultCount, 
   networkTypeCounts,
   searchResults = []
@@ -110,7 +108,7 @@ export default function SearchPanel({
   };
 
   return (
-    <div className="search-panel">
+    <div className={`search-panel ${isVisible ? 'visible' : ''}`}>
       <div className="search-panel-header">
         <h2>Search & Filter</h2>
         {resultCount !== undefined && (
@@ -181,25 +179,6 @@ export default function SearchPanel({
                 </span>
               </label>
             ))}
-          </div>
-        </div>
-
-        {/* Clustering Toggle */}
-        <div className="filter-group">
-          <label className="toggle-label">
-            <span>Enable Marker Clustering</span>
-            <div className="toggle-switch">
-              <input
-                type="checkbox"
-                checked={clusteringEnabled}
-                onChange={(e) => onClusteringToggle(e.target.checked)}
-                id="clustering-toggle"
-              />
-              <label htmlFor="clustering-toggle" className="toggle-slider"></label>
-            </div>
-          </label>
-          <div className="toggle-description">
-            Groups nearby markers for better performance with large datasets
           </div>
         </div>
 

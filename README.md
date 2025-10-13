@@ -1,8 +1,6 @@
 # WiFi Map Viewer
 
-> This app is just something I wanted since I had lot of performance issues with WiGLE. At this stage it's all offline cos I feel more comfortable that way (I am not dev). I got access to test version of Kiro, new vibe coding IDE from Amazon and decided to try it out. There are issues, and there can always be improvements but for someone who's dumb as they get I'm happy.
-
-An offline desktop WiFi mapping application - like WiGLE but completely local and private. Visualize WiFi networks on an interactive map using data from wardriving apps. Fully compatible with WiGLE WiFi Wardriving app exports and other popular formats.
+An offline desktop WiFi mapping application for visualizing WiFi networks on an interactive map. Designed as a local, privacy-focused alternative to online wardriving platforms, with full compatibility for WiGLE WiFi Wardriving app exports and other popular formats.
 
 **100% Offline** - All data stays on your machine. No accounts, no cloud, no tracking.
 
@@ -21,6 +19,9 @@ An offline desktop WiFi mapping application - like WiGLE but completely local an
 - 📍 Interactive map visualization with OpenStreetMap
 - 📊 Support for multiple file formats (WiGLE CSV, Kismet CSV, KML, SQLite)
 - 🔍 Advanced search and filtering (SSID, BSSID, encryption, signal strength, date range)
+- 🎨 Collapsible search panel with smooth animations
+- ⚙️ Settings dialog for customizing map behavior
+- 🗺️ Smart automatic clustering at low zoom levels for optimal performance
 - 🗄️ Local SQLite database for offline operation
 - 🏢 Automatic manufacturer lookup via OUI database
 - 🎯 Trilateration for accurate network positioning
@@ -108,8 +109,16 @@ All build artifacts are created in the `release/` directory:
 1. **Launch the application**
 2. **Import data**: File → Import, then select your WiFi data file
 3. **Explore**: Pan and zoom the map to view networks
-4. **Search**: Use the search panel to filter networks by SSID, BSSID, encryption, etc.
-5. **Details**: Click on network markers to view detailed information
+4. **Search**: Toggle the search panel to filter networks by SSID, BSSID, encryption, etc.
+5. **Customize**: Open Settings to configure clustering behavior and other preferences
+6. **Details**: Click on network markers to view detailed information
+
+### UI Tips
+
+- **Search Panel**: Click the search icon in the menu bar to show/hide the filter panel
+- **Settings**: Access clustering preferences and other options via the settings icon
+- **Clustering**: Networks automatically cluster at low zoom levels for better performance
+- **Active Filters**: A badge on the search icon shows the number of active filters
 
 ### Supported File Formats
 
@@ -226,6 +235,15 @@ Contributions are welcome! Please:
 ## License
 
 MIT License - see LICENSE file for details
+
+## Recent Updates
+
+### UI Quality of Life Improvements
+- Added collapsible search panel with smooth slide animations
+- Implemented settings dialog for user preferences
+- Smart automatic clustering at low zoom levels (< zoom 13)
+- Visual indicator when clustering is forced for performance
+- Persistent UI preferences across sessions
 
 ## Acknowledgments
 

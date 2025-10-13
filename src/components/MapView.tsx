@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -7,6 +7,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import 'leaflet.markercluster';
 import './MapView.css';
 import { Network, GeoBounds, EncryptionType, NetworkType } from '../types/network';
+import ClusteringIndicator from './ClusteringIndicator';
 
 // Fix for default marker icons in Leaflet with webpack/vite
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -21,6 +22,7 @@ interface MapViewProps {
   onNetworkClick?: (network: Network) => void;
   onBoundsChange?: (bounds: GeoBounds) => void;
   clusteringEnabled: boolean;
+  autoClusterZoomThreshold?: number;
   defaultCenter?: [number, number];
   defaultZoom?: number;
   centerOnNetwork?: Network | null;
@@ -187,11 +189,15 @@ function JumpToNetworkHandler({ network }: { network: Network | null | undefined
 function NetworkMarkers({ 
   networks, 
   onNetworkClick,
-  clusteringEnabled
+  clusteringEnabled,
+  autoClusterZoomThreshold = 13,
+  onForcedClusteringChange
 }: { 
   networks: Network[]; 
   onNetworkClick?: (network: Network) => void;
   clusteringEnabled: boolean;
+  autoClusterZoomThreshold?: number;
+  onForcedClusteringChange?: (isForcedClustering: boolean) => void;
 }) {
   const map = useMap();
   const markerClusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
@@ -201,6 +207,23 @@ function NetworkMarkers({
 
   // Maximum markers to render at once (performance cap)
   const MAX_MARKERS = 10000;
+
+  // Compute effective clustering state based on zoom threshold and user preference
+  const effectiveClusteringEnabled = useMemo(() => {
+    return currentZoom < autoClusterZoomThreshold || clusteringEnabled;
+  }, [currentZoom, autoClusterZoomThreshold, clusteringEnabled]);
+
+  // Track if clustering is forced due to zoom level
+  const isForcedClustering = useMemo(() => {
+    return currentZoom < autoClusterZoomThreshold && !clusteringEnabled;
+  }, [currentZoom, autoClusterZoomThreshold, clusteringEnabled]);
+
+  // Notify parent when forced clustering state changes
+  useEffect(() => {
+    if (onForcedClusteringChange) {
+      onForcedClusteringChange(isForcedClustering);
+    }
+  }, [isForcedClustering, onForcedClusteringChange]);
 
   useEffect(() => {
     // Clean up existing layers when clustering mode changes
@@ -215,10 +238,10 @@ function NetworkMarkers({
       markerLayerGroupRef.current = null;
     }
 
-    // Create appropriate layer group based on clustering preference
+    // Create appropriate layer group based on effective clustering state
     let layerGroup: L.MarkerClusterGroup | L.LayerGroup;
     
-    if (clusteringEnabled) {
+    if (effectiveClusteringEnabled) {
       // Create marker cluster group for clustering mode
       markerClusterGroupRef.current = L.markerClusterGroup({
         maxClusterRadius: 50,
@@ -246,16 +269,16 @@ function NetworkMarkers({
     });
 
     // Apply stricter limits when clustering is disabled for performance
-    const effectiveMaxMarkers = clusteringEnabled ? MAX_MARKERS : Math.min(MAX_MARKERS, 5000);
+    const effectiveMaxMarkers = effectiveClusteringEnabled ? MAX_MARKERS : Math.min(MAX_MARKERS, 5000);
     const networksToRender = visibleNetworks.slice(0, effectiveMaxMarkers);
     
     // Log if we're hitting the cap
     if (visibleNetworks.length > effectiveMaxMarkers) {
-      console.warn(`Rendering ${effectiveMaxMarkers} of ${visibleNetworks.length} visible networks (performance cap${!clusteringEnabled ? ' - clustering disabled' : ''})`);
+      console.warn(`Rendering ${effectiveMaxMarkers} of ${visibleNetworks.length} visible networks (performance cap${!effectiveClusteringEnabled ? ' - clustering disabled' : ''})`);
     }
     
     // Warn user if clustering is disabled with many markers
-    if (!clusteringEnabled && visibleNetworks.length > 1000) {
+    if (!effectiveClusteringEnabled && visibleNetworks.length > 1000) {
       console.warn(`Performance warning: ${visibleNetworks.length} markers without clustering. Consider enabling clustering for better performance.`);
     }
 
@@ -360,7 +383,7 @@ function NetworkMarkers({
         markerLayerGroupRef.current = null;
       }
     };
-  }, [networks, onNetworkClick, currentZoom, viewportBounds, map, clusteringEnabled]);
+  }, [networks, onNetworkClick, currentZoom, viewportBounds, map, effectiveClusteringEnabled]);
 
   // Listen to zoom and move changes to update viewport
   useEffect(() => {
@@ -386,12 +409,16 @@ export default function MapView({
   onNetworkClick,
   onBoundsChange,
   clusteringEnabled,
+  autoClusterZoomThreshold = 13,
   defaultCenter = [0, 0],
   defaultZoom = 13,
   centerOnNetwork = null,
 }: MapViewProps) {
+  const [isForcedClustering, setIsForcedClustering] = useState(false);
+
   return (
-    <div style={{ width: '100%', height: '100%' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <ClusteringIndicator isVisible={isForcedClustering} />
       <MapContainer
         center={defaultCenter}
         zoom={defaultZoom}
@@ -410,6 +437,8 @@ export default function MapView({
           networks={networks} 
           onNetworkClick={onNetworkClick}
           clusteringEnabled={clusteringEnabled}
+          autoClusterZoomThreshold={autoClusterZoomThreshold}
+          onForcedClusteringChange={setIsForcedClustering}
         />
         <JumpToNetworkHandler network={centerOnNetwork} />
       </MapContainer>

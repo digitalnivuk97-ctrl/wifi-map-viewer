@@ -8,6 +8,7 @@
     "dev": "vite",
     "build": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder",
     "build:win": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --win",
+    "build:win-portable": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --win portable",
     "build:mac": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --mac",
     "build:linux": "tsc && vite build && node scripts/copy-preload.js && tsc -p tsconfig.node.json && electron-builder --linux",
     "preview": "vite preview",
@@ -77,6 +78,10 @@
       "target": [
         {
           "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
           "arch": ["x64"]
         }
       ],

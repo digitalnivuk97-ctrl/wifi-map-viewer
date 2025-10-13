@@ -9,6 +9,10 @@ export interface AppConfig {
         defaultZoom: number;
         defaultCenter: [number, number];
         clusteringEnabled: boolean;
+        autoClusterZoomThreshold: number;
+    };
+    ui: {
+        searchPanelVisible: boolean;
     };
 }
 /**

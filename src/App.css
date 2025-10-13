@@ -26,6 +26,12 @@
 .menu-bar-items {
   display: flex;
   height: 100%;
+  flex: 1;
+  gap: 0;
+}
+
+.menu-bar-spacer {
+  flex: 1;
 }
 
 .menu-item {
@@ -43,10 +49,34 @@
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.2s;
+  white-space: nowrap;
 }
 
 .menu-item-label:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-button,
+.settings-button {
+  position: relative;
+}
+
+.filter-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: #e74c3c;
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .menu-dropdown {
@@ -81,10 +111,12 @@
   flex: 1;
   display: flex;
   overflow: hidden;
+  position: relative;
 }
 
 .map-container {
   flex: 1;
+  width: 100%;
   position: relative;
 }
 
